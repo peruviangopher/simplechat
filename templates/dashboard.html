@@ -1,0 +1,83 @@
+{{template "header.html" .}}
+<section class="section">
+    <div class="container">
+        <h1 class="title">
+            Dashboard
+        </h1>
+
+        <div class="columns">
+            <div class="column is-one-third">{{template "menu.html" .}}</div>
+            <div class="column is-two-thirds">
+                <p  style="background-color: whitesmoke; padding: 10px;">
+                {{.content}}</p>
+                <div id="chat1" action-over="1" class="row chatbox" style="display: block">
+                    <p  style="background-color: whitesmoke; padding: 10px;">
+                        Chat 1
+                    </p>
+                    <ul id="messages1"></ul>
+                    <form id="chatbox1">
+                        <textarea></textarea>
+                        <input type="submit" value="Send" />
+                    </form>
+                </div>
+
+                <div id="chat2" action-over="2" class="row chatbox" style="display: none">
+                    <p  style="background-color: whitesmoke; padding: 10px;">
+                        Chat 2
+                    </p>
+                    <ul id="messages2"></ul>
+                    <form id="chatbox2">
+                        <textarea></textarea>
+                        <input type="submit" value="Send" />
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    $(function(){
+
+        let boxes = document.querySelectorAll(".chatbox");
+        boxes.forEach(box => {
+            console.log(box.textContent)
+            let chatID = box.getAttribute("action-over")
+
+            var socket = null;
+            var msgBox = $("#chatbox" + chatID + " textarea");
+            var messages = $("#messages" + chatID);
+
+            $("#chatbox"+chatID).submit(function(){
+
+                if (!msgBox.val()) return false;
+                if (!socket) {
+                    alert("Error: There is no socket connection.");
+                    return false;
+                }
+
+                socket.send(msgBox.val());
+                msgBox.val("");
+                return false;
+
+            });
+
+            if (!window["WebSocket"]) {
+                alert("Error: Your browser does not support web sockets.")
+            } else {
+                socket = new WebSocket("ws://localhost:8080/room/"+chatID);
+                socket.onclose = function() {
+                    alert("Connection has been closed.");
+                }
+                socket.onmessage = function(e) {
+                    messages.append($("<li>").text(e.data));
+                }
+            }
+        });
+    });
+
+</script>
+
+{{template "footer.html"}}
