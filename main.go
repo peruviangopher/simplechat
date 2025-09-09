@@ -2,7 +2,7 @@ package main
 
 import (
 	"simplechat/bot"
-	"simplechat/server"
+	"simplechat/chatserver"
 	"simplechat/setup"
 )
 
@@ -11,8 +11,8 @@ func main() {
 
 	switch cfg.ServerMode() {
 	case setup.ServerModeAPI:
-		server.Run(cfg)
+		chatserver.Run(cfg)
 	case setup.ServerModeBot:
-		bot.RunServer()
+		bot.RunServer(cfg)
 	}
 }

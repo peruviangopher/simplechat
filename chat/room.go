@@ -3,6 +3,7 @@ package chat
 import (
 	"log"
 	"net/http"
+	"simplechat/setup"
 
 	"github.com/gorilla/websocket"
 )
@@ -15,6 +16,7 @@ const (
 var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
 
 type Room struct {
+	roomID string
 
 	// clients holds all current clients in this Room
 	clients map[*client]bool
@@ -29,7 +31,15 @@ type Room struct {
 	forward chan []byte
 }
 
-func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request, userName string) {
+func (r *Room) GetID() string {
+	return r.roomID
+}
+
+func (r *Room) SendExternalMsg(msg []byte) {
+	r.forward <- msg
+}
+
+func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request, userName string, cfg *setup.Config) {
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
 		log.Fatal("ServeHTTP:", err)
@@ -37,6 +47,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request, userName stri
 	}
 
 	newClient := &client{
+		cfg:     cfg,
 		name:    userName,
 		socket:  socket,
 		receive: make(chan []byte, messageBufferSize),
@@ -51,8 +62,9 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request, userName stri
 }
 
 // NewRoom
-func NewRoom() *Room {
+func NewRoom(id string) *Room {
 	return &Room{
+		roomID:  id,
 		forward: make(chan []byte),
 		join:    make(chan *client),
 		leave:   make(chan *client),

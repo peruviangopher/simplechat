@@ -7,8 +7,10 @@ import (
 
 func CheckUserPass(username, password string) bool {
 	userpass := make(map[string]string)
-	userpass["hello"] = "itsme"
-	userpass["john"] = "doe"
+	userpass["Bob"] = "1111"
+	userpass["Jimmy"] = "2222"
+	userpass["Paul"] = "3333"
+	userpass["Kat"] = "4444"
 
 	log.Println("checkUserPass", username, password, userpass)
 
@@ -26,13 +28,4 @@ func CheckUserPass(username, password string) bool {
 
 func EmptyUserPass(username, password string) bool {
 	return strings.Trim(username, " ") == "" || strings.Trim(password, " ") == ""
-}
-
-func GetChatRoomsForView(rooms int) []int {
-	nums := make([]int, rooms)
-	for i := 0; i < rooms; i++ {
-		nums[i] = i + 1
-	}
-
-	return nums
 }

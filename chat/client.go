@@ -2,6 +2,8 @@ package chat
 
 import (
 	"fmt"
+	"simplechat/chat/command"
+	"simplechat/setup"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -9,6 +11,8 @@ import (
 
 // Client represents a single chatting user.
 type client struct {
+	cfg *setup.Config
+
 	// name is the client user name
 	name string
 
@@ -32,6 +36,7 @@ func (c *client) read() {
 		}
 
 		formatMsg := fmt.Sprintf("<strong>%s - %s:</strong><br>&nbsp;%s", time.Now().Format("15:04:05"), c.name, msg)
+		command.EvaluateMsgCmd(c.cfg, string(msg), c.room.roomID)
 
 		c.room.forward <- []byte(formatMsg)
 	}

@@ -1,4 +1,4 @@
-package server
+package chatserver
 
 import (
 	"github.com/gin-contrib/sessions"

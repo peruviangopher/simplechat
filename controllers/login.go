@@ -8,7 +8,6 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
-	"simplechat/chat"
 	"simplechat/helpers"
 	"simplechat/setup"
 )
@@ -80,39 +79,5 @@ func LogoutGetHandler(cfg *setup.Config) gin.HandlerFunc {
 		}
 
 		c.Redirect(http.StatusTemporaryRedirect, "/")
-	}
-}
-
-func IndexGetHandler(cfg *setup.Config) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(cfg.UserKey())
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"content": "Log in to start!",
-			"user":    user,
-		})
-	}
-}
-
-func DashboardGetHandler(cfg *setup.Config) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(cfg.UserKey())
-		c.HTML(http.StatusOK, "dashboard.html", gin.H{
-			"content":  "Chat rooms:",
-			"user":     user,
-			"rooms":    helpers.GetChatRoomsForView(cfg.Rooms()),
-			"chatport": cfg.Port(),
-		})
-	}
-}
-
-func Room(r *chat.Room, cfg *setup.Config) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(cfg.UserKey())
-		username := user.(string)
-
-		r.ServeHTTP(c.Writer, c.Request, username)
 	}
 }

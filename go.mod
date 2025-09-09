@@ -8,6 +8,7 @@ require (
 	github.com/gin-contrib/sessions v1.0.5-0.20250815080257-b2b49a92d7e2
 	github.com/gin-gonic/gin v1.10.1
 	github.com/gorilla/websocket v1.5.3
+	github.com/rabbitmq/amqp091-go v1.10.0
 )
 
 require (
