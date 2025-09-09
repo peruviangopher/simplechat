@@ -5,6 +5,8 @@ echo "🚀 Setting up RabbitMQ..."
 docker rm -f rabbitmq 2>/dev/null || true
 docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
+sleep 3
+
 echo "🐹 Building Chat API..."
 docker build -t simplechat -f Dockerfile .
 
