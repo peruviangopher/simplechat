@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"simplechat/chat"
-	"simplechat/config"
 	"simplechat/controllers"
+	"simplechat/setup"
 )
 
-func PublicRoutes(g *gin.RouterGroup, cfg *config.Config) {
+func PublicRoutes(g *gin.RouterGroup, cfg *setup.Config) {
 
 	g.GET("/login", controllers.LoginGetHandler(cfg))
 	g.POST("/login", controllers.LoginPostHandler(cfg))
@@ -18,7 +18,7 @@ func PublicRoutes(g *gin.RouterGroup, cfg *config.Config) {
 
 }
 
-func PrivateRoutes(g *gin.RouterGroup, cfg *config.Config) {
+func PrivateRoutes(g *gin.RouterGroup, cfg *setup.Config) {
 	g.GET("/logout", controllers.LogoutGetHandler(cfg))
 
 	for i := 1; i <= cfg.Rooms(); i++ {

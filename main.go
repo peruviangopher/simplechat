@@ -1,36 +1,18 @@
 package main
 
 import (
-	//"html/template"
-	//"strings"
-
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/filesystem"
-	"github.com/gin-gonic/gin"
-
-	"simplechat/config"
-	"simplechat/middleware"
-	"simplechat/routes"
+	"simplechat/bot"
+	"simplechat/server"
+	"simplechat/setup"
 )
 
 func main() {
-	cfg := config.LoadConfig()
+	cfg := setup.LoadConfig()
 
-	router := gin.Default()
-
-	router.Static("/assets", "./assets")
-	router.LoadHTMLGlob("templates/*.html")
-
-	var sessionPath = "/tmp/"
-	store := filesystem.NewStore(sessionPath, cfg.Secret())
-	router.Use(sessions.Sessions("mysession", store))
-
-	public := router.Group("/")
-	routes.PublicRoutes(public, cfg)
-
-	private := router.Group("/")
-	private.Use(middleware.AuthRequired(cfg))
-	routes.PrivateRoutes(private, cfg)
-
-	router.Run(cfg.Port())
+	switch cfg.ServerMode() {
+	case setup.ServerModeAPI:
+		server.Run(cfg)
+	case setup.ServerModeBot:
+		bot.RunServer()
+	}
 }

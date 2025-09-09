@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"simplechat/chat"
-	"simplechat/config"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
+	"simplechat/chat"
 	"simplechat/helpers"
+	"simplechat/setup"
 )
 
-func LoginGetHandler(cfg *config.Config) gin.HandlerFunc {
+func LoginGetHandler(cfg *setup.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(cfg.UserKey())
@@ -32,7 +32,7 @@ func LoginGetHandler(cfg *config.Config) gin.HandlerFunc {
 	}
 }
 
-func LoginPostHandler(cfg *config.Config) gin.HandlerFunc {
+func LoginPostHandler(cfg *setup.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(cfg.UserKey())
@@ -64,7 +64,7 @@ func LoginPostHandler(cfg *config.Config) gin.HandlerFunc {
 	}
 }
 
-func LogoutGetHandler(cfg *config.Config) gin.HandlerFunc {
+func LogoutGetHandler(cfg *setup.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(cfg.UserKey())
@@ -83,7 +83,7 @@ func LogoutGetHandler(cfg *config.Config) gin.HandlerFunc {
 	}
 }
 
-func IndexGetHandler(cfg *config.Config) gin.HandlerFunc {
+func IndexGetHandler(cfg *setup.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(cfg.UserKey())
@@ -94,7 +94,7 @@ func IndexGetHandler(cfg *config.Config) gin.HandlerFunc {
 	}
 }
 
-func DashboardGetHandler(cfg *config.Config) gin.HandlerFunc {
+func DashboardGetHandler(cfg *setup.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(cfg.UserKey())
@@ -107,7 +107,7 @@ func DashboardGetHandler(cfg *config.Config) gin.HandlerFunc {
 	}
 }
 
-func Room(r *chat.Room, cfg *config.Config) gin.HandlerFunc {
+func Room(r *chat.Room, cfg *setup.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(cfg.UserKey())
