@@ -1,8 +1,6 @@
 package main
 
 import (
-	"flag"
-	"strconv"
 	//"html/template"
 	//"strings"
 
@@ -10,14 +8,13 @@ import (
 	"github.com/gin-contrib/sessions/filesystem"
 	"github.com/gin-gonic/gin"
 
-	"simplechat/globals"
+	"simplechat/config"
 	"simplechat/middleware"
 	"simplechat/routes"
 )
 
 func main() {
-	var roomsQuantity = flag.String("rooms", strconv.Itoa(globals.DefaultRooms), "Number of rooms available in app")
-	flag.Parse() // parse the flags
+	cfg := config.LoadConfig()
 
 	router := gin.Default()
 
@@ -25,15 +22,15 @@ func main() {
 	router.LoadHTMLGlob("templates/*.html")
 
 	var sessionPath = "/tmp/"
-	store := filesystem.NewStore(sessionPath, []byte("secret"))
+	store := filesystem.NewStore(sessionPath, cfg.Secret())
 	router.Use(sessions.Sessions("mysession", store))
 
 	public := router.Group("/")
-	routes.PublicRoutes(public)
+	routes.PublicRoutes(public, cfg)
 
 	private := router.Group("/")
-	private.Use(middleware.AuthRequired)
-	routes.PrivateRoutes(private, roomsQuantity)
+	private.Use(middleware.AuthRequired(cfg))
+	routes.PrivateRoutes(private, cfg)
 
-	router.Run(":8080")
+	router.Run(cfg.Port())
 }

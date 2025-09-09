@@ -5,18 +5,18 @@ import (
 	"log"
 	"net/http"
 	"simplechat/chat"
+	"simplechat/config"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
-	"simplechat/globals"
 	"simplechat/helpers"
 )
 
-func LoginGetHandler() gin.HandlerFunc {
+func LoginGetHandler(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		user := session.Get(globals.Userkey)
+		user := session.Get(cfg.UserKey())
 		if user != nil {
 			c.HTML(http.StatusBadRequest, "login.html",
 				gin.H{
@@ -32,10 +32,10 @@ func LoginGetHandler() gin.HandlerFunc {
 	}
 }
 
-func LoginPostHandler() gin.HandlerFunc {
+func LoginPostHandler(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		user := session.Get(globals.Userkey)
+		user := session.Get(cfg.UserKey())
 		if user != nil {
 			c.HTML(http.StatusBadRequest, "login.html", gin.H{"content": "Please logout first"})
 			return
@@ -54,7 +54,7 @@ func LoginPostHandler() gin.HandlerFunc {
 			return
 		}
 
-		session.Set(globals.Userkey, username)
+		session.Set(cfg.UserKey(), username)
 		if err := session.Save(); err != nil {
 			c.HTML(http.StatusInternalServerError, "login.html", gin.H{"content": "Failed to save session"})
 			return
@@ -64,16 +64,16 @@ func LoginPostHandler() gin.HandlerFunc {
 	}
 }
 
-func LogoutGetHandler() gin.HandlerFunc {
+func LogoutGetHandler(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		user := session.Get(globals.Userkey)
+		user := session.Get(cfg.UserKey())
 		fmt.Println("logging out user:", user)
 		if user == nil {
 			log.Println("Invalid session token")
 			return
 		}
-		session.Delete(globals.Userkey)
+		session.Delete(cfg.UserKey())
 		if err := session.Save(); err != nil {
 			log.Println("Failed to save session:", err)
 			return
@@ -83,10 +83,10 @@ func LogoutGetHandler() gin.HandlerFunc {
 	}
 }
 
-func IndexGetHandler() gin.HandlerFunc {
+func IndexGetHandler(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		user := session.Get(globals.Userkey)
+		user := session.Get(cfg.UserKey())
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"content": "Log in to start!",
 			"user":    user,
@@ -94,22 +94,23 @@ func IndexGetHandler() gin.HandlerFunc {
 	}
 }
 
-func DashboardGetHandler(rooms int) gin.HandlerFunc {
+func DashboardGetHandler(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		user := session.Get(globals.Userkey)
+		user := session.Get(cfg.UserKey())
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
-			"content": "Chat rooms:",
-			"user":    user,
-			"rooms":   helpers.GetChatRoomsForView(rooms),
+			"content":  "Chat rooms:",
+			"user":     user,
+			"rooms":    helpers.GetChatRoomsForView(cfg.Rooms()),
+			"chatport": cfg.Port(),
 		})
 	}
 }
 
-func Room(r *chat.Room) gin.HandlerFunc {
+func Room(r *chat.Room, cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		user := session.Get(globals.Userkey)
+		user := session.Get(cfg.UserKey())
 		username := user.(string)
 
 		r.ServeHTTP(c.Writer, c.Request, username)

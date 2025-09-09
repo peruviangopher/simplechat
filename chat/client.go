@@ -2,6 +2,7 @@ package chat
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -30,7 +31,7 @@ func (c *client) read() {
 			return
 		}
 
-		formatMsg := fmt.Sprintf("%s: %s", c.name, msg)
+		formatMsg := fmt.Sprintf("<strong>%s - %s:</strong><br>&nbsp;%s", time.Now().Format("15:04:05"), c.name, msg)
 
 		c.room.forward <- []byte(formatMsg)
 	}
