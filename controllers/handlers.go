@@ -9,8 +9,8 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
-	globals "simplechat/globals"
-	helpers "simplechat/helpers"
+	"simplechat/globals"
+	"simplechat/helpers"
 )
 
 func LoginGetHandler() gin.HandlerFunc {
@@ -79,17 +79,6 @@ func LogoutGetHandler() gin.HandlerFunc {
 			return
 		}
 
-		/*
-			cookie := http.Cookie{
-				Name:     "mysession",
-				Value:    "", // Set value to empty string
-				MaxAge:   -1, // Or 0, or a time in the past like time.Unix(0, 0)
-				Path:     "/",
-				HttpOnly: true,
-			}
-			http.SetCookie(c.Writer, &cookie)
-		*/
-
 		c.Redirect(http.StatusTemporaryRedirect, "/")
 	}
 }
@@ -105,13 +94,14 @@ func IndexGetHandler() gin.HandlerFunc {
 	}
 }
 
-func DashboardGetHandler() gin.HandlerFunc {
+func DashboardGetHandler(rooms int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
 		user := session.Get(globals.Userkey)
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
 			"content": "Chat rooms:",
 			"user":    user,
+			"rooms":   helpers.GetChatRoomsForView(rooms),
 		})
 	}
 }

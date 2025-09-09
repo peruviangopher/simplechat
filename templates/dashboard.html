@@ -9,28 +9,21 @@
             <div class="column is-one-third">{{template "menu.html" .}}</div>
             <div class="column is-two-thirds">
                 <p  style="background-color: whitesmoke; padding: 10px;">
-                {{.content}}</p>
-                <div id="chat1" action-over="1" class="row chatbox" style="display: block">
-                    <p  style="background-color: whitesmoke; padding: 10px;">
-                        Chat 1
-                    </p>
-                    <ul id="messages1"></ul>
-                    <form id="chatbox1">
-                        <textarea></textarea>
-                        <input type="submit" value="Send" />
-                    </form>
-                </div>
+                    {{.content}}
+                </p>
 
-                <div id="chat2" action-over="2" class="row chatbox" style="display: none">
-                    <p  style="background-color: whitesmoke; padding: 10px;">
-                        Chat 2
-                    </p>
-                    <ul id="messages2"></ul>
-                    <form id="chatbox2">
-                        <textarea></textarea>
-                        <input type="submit" value="Send" />
-                    </form>
-                </div>
+                {{range .rooms}}
+                    <div id="chat{{.}}" action-over="{{.}}" class="row chatbox" style="display: {{if eq . 1 }}block{{else}}none{{end}}">
+                        <p  style="background-color: whitesmoke; padding: 10px;">
+                            Chat {{.}}
+                        </p>
+                        <ul id="messages{{.}}"></ul>
+                        <form id="chatbox{{.}}">
+                            <textarea></textarea>
+                            <input type="submit" value="Send" />
+                        </form>
+                    </div>
+                {{end}}
             </div>
 
         </div>

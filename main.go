@@ -2,16 +2,17 @@ package main
 
 import (
 	"flag"
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/filesystem"
-	"github.com/gin-gonic/gin"
 	"strconv"
 	//"html/template"
 	//"strings"
 
-	globals "simplechat/globals"
-	middleware "simplechat/middleware"
-	routes "simplechat/routes"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/filesystem"
+	"github.com/gin-gonic/gin"
+
+	"simplechat/globals"
+	"simplechat/middleware"
+	"simplechat/routes"
 )
 
 func main() {

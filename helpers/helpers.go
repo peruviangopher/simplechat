@@ -27,3 +27,12 @@ func CheckUserPass(username, password string) bool {
 func EmptyUserPass(username, password string) bool {
 	return strings.Trim(username, " ") == "" || strings.Trim(password, " ") == ""
 }
+
+func GetChatRoomsForView(rooms int) []int {
+	nums := make([]int, rooms)
+	for i := 0; i < rooms; i++ {
+		nums[i] = i + 1
+	}
+
+	return nums
+}

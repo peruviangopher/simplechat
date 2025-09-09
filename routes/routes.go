@@ -2,12 +2,13 @@ package routes
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"simplechat/chat"
-	"simplechat/globals"
 	"strconv"
 
-	controllers "simplechat/controllers"
+	"github.com/gin-gonic/gin"
+
+	"simplechat/chat"
+	"simplechat/controllers"
+	"simplechat/globals"
 )
 
 func PublicRoutes(g *gin.RouterGroup) {
@@ -19,18 +20,18 @@ func PublicRoutes(g *gin.RouterGroup) {
 }
 
 func PrivateRoutes(g *gin.RouterGroup, roomsQuantity *string) {
-
-	g.GET("/dashboard", controllers.DashboardGetHandler())
 	g.GET("/logout", controllers.LogoutGetHandler())
 
-	loop, err := strconv.Atoi(*roomsQuantity)
+	rooms, err := strconv.Atoi(*roomsQuantity)
 	if err != nil {
-		loop = globals.DefaultRooms
+		rooms = globals.DefaultRooms
 	}
 
-	for i := 1; i <= loop; i++ {
+	for i := 1; i <= rooms; i++ {
 		r := chat.NewRoom()
 		g.GET(fmt.Sprintf("/room/%v", i), controllers.Room(r))
 		go r.Run()
 	}
+
+	g.GET("/dashboard", controllers.DashboardGetHandler(rooms))
 }

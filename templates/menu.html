@@ -4,8 +4,9 @@
         {{.user}}'s chats available
     </p>
     <ul class="menu-list is-hoverable">
-        <li action-over="1" class="is-hoverable chat-btn"><a>Chat 1</a></li>
-        <li action-over="2" class="is-hoverable chat-btn"><a>Chat 2</a></li>
+        {{range .rooms}}
+            <li action-over="{{.}}" class="is-hoverable chat-btn"><a>Chat {{.}}</a></li>
+        {{end}}
     </ul>
 </aside>
 <script>
